@@ -1,129 +1,72 @@
-☸️ Kubernetes Zero to Hero
+# ☸️ Kubernetes Zero to Hero
 
-Practical Kubernetes notes covering fundamentals, architecture, workloads, networking, storage, security, Helm, cloud Kubernetes, troubleshooting, and interview preparation.
+> Practical Kubernetes notes covering fundamentals, architecture, workloads, networking, storage, security, Helm, cloud Kubernetes, troubleshooting, and interview preparation.
 
-1. What is Kubernetes?
+## 1. What is Kubernetes?
 
 Kubernetes is a container orchestration platform used to deploy, manage, scale, and monitor containerized applications.
 
-Why do we need it?
+### Why do we need it?
 
 Docker can run containers, but managing hundreds of containers manually is difficult.
 
-Kubernetes provides:
+### Kubernetes provides
 
-Auto-healing
+- Auto-healing
+- Auto-scaling
+- Load balancing
+- Rolling updates
+- Service discovery
+- Storage management
 
-Auto-scaling
+### Think
 
-Load balancing
+- **Docker** → Runs containers
+- **Kubernetes** → Manages containers at scale
 
-Rolling updates
-
-Service discovery
-
-Storage management
-
-Think:
-
-Docker → Runs containers
-Kubernetes → Manages containers at scale
-
-2. Why Kubernetes?
+## 2. Why Kubernetes?
 
 Docker solves the problem of creating and running containers.
 
 But imagine you have:
 
-500 containers
-
-Multiple servers
-
-High traffic
-
-Application failures
-
-Multiple environments
-
-New application releases
+- 500 containers
+- Multiple servers
+- High traffic
+- Application failures
+- Multiple environments
+- New application releases
 
 Managing all of this manually becomes difficult.
 
-Kubernetes provides:
+### Kubernetes provides
 
-Problem
+| Problem | Kubernetes Solution |
+|---|---|
+| Container crashes | Self-healing |
+| High traffic | Autoscaling |
+| Multiple servers | Cluster management |
+| New application version | Rolling updates |
+| Server failure | Rescheduling |
+| Configuration | ConfigMaps / Secrets |
+| Service discovery | Services / DNS |
+| External traffic | Ingress / Load Balancer |
 
-Kubernetes Solution
+## 3. Docker vs Kubernetes
 
-Container crashes
+> **Interview tip:** This is one of the most common interview questions.
 
-Self-healing
+| Docker | Kubernetes |
+|---|---|
+| Creates and runs containers | Manages containers at scale |
+| Runs mainly on a single host | Manages multiple nodes |
+| Uses Dockerfile | Uses YAML manifests |
+| Docker Compose for multi-container apps | Kubernetes Deployments / Services |
+| Limited orchestration | Full container orchestration |
+| Container runtime / tooling | Container orchestration platform |
+> **Important:** Docker and Kubernetes are not competitors.
 
-High traffic
-
-Autoscaling
-
-Multiple servers
-
-Cluster management
-
-New application version
-
-Rolling updates
-
-Server failure
-
-Rescheduling
-
-Configuration
-
-ConfigMaps / Secrets
-
-Service discovery
-
-Services / DNS
-
-External traffic
-
-Ingress / Load Balancer
-
-3. Docker vs Kubernetes
-
-This is one of the most common interview questions.
-
-Docker
-
-Kubernetes
-
-Creates and runs containers
-
-Manages containers at scale
-
-Runs mainly on a single host
-
-Manages multiple nodes
-
-Uses Dockerfile
-
-Uses YAML manifests
-
-Docker Compose for multi-container apps
-
-Kubernetes Deployments / Services
-
-Limited orchestration
-
-Full container orchestration
-
-Container runtime / tooling
-
-Container orchestration platform
-
-Important:
-
-Docker and Kubernetes are not competitors.
-
-Typical flow:
+### Typical flow
 
 Application Code
 ↓
@@ -137,58 +80,54 @@ Kubernetes
 ↓
 Pod
 
-4. What is Container Orchestration?
+## 4. What is Container Orchestration?
 
 Container orchestration means automatically managing containers.
 
 It includes:
 
-Deployment
+- Deployment
+- Scaling
+- Networking
+- Load balancing
+- Self-healing
+- Updates
+- Storage
+- Scheduling
 
-Scaling
+### Popular orchestration tools
 
-Networking
-
-Load balancing
-
-Self-healing
-
-Updates
-
-Storage
-
-Scheduling
-
-Popular orchestration tools:
-
-Kubernetes, Docker Swarm, Apache Mesos
+- Kubernetes
+- Docker Swarm
+- Apache Mesos
 
 Kubernetes became the dominant platform for large-scale container orchestration.
 
-5. What is a Pod?
+## 5. What is a Pod?
 
 A Pod is the smallest deployable unit in Kubernetes.
 
-A Pod can contain:
+### A Pod can contain
 
+```text
 Pod
 ├── Container 1
 └── Container 2
+```
 
 Containers inside the same Pod can share:
 
-Network namespace
+- Network namespace
+- IP address
+- Storage volumes
 
-IP address
-
-Storage volumes
-
-Usually:
+### Usually
 
 1 Pod = 1 Main Application Container
 
-Example:
+### Example
 
+```yaml
 apiVersion: v1
 kind: Pod
 
@@ -199,20 +138,27 @@ spec:
   containers:
     - name: nginx
       image: nginx
+```
 
-Create:
+### Create
 
+```bash
 kubectl apply -f pod.yaml
+```
 
-Check:
+### Check
 
+```bash
 kubectl get pods
+```
 
-Delete:
+### Delete
 
+```bash
 kubectl delete pod nginx-pod
+```
 
-6. Deployments
+## 6. Deployments
 
 You normally should not create Pods directly in production.
 
@@ -220,14 +166,17 @@ Instead, use a Deployment.
 
 A Deployment manages:
 
+```text
 Deployment
      |
 ReplicaSet
      |
 Pods
+```
 
-Example:
+### Example
 
+```yaml
 apiVersion: apps/v1
 kind: Deployment
 
@@ -250,23 +199,26 @@ spec:
       containers:
         - name: nginx
           image: nginx:latest
+```
 
-Apply:
+### Apply
 
+```bash
 kubectl apply -f deployment.yaml
+```
 
-Check:
+### Check
 
 kubectl get deployments
 kubectl get replicasets
-
+```bash
 kubectl get pods
-
-7. ReplicaSet
+```
+## 7. ReplicaSet
 
 A ReplicaSet ensures that the required number of Pods are running.
 
-Example:
+### Example
 
 Desired Pods = 3
 
@@ -276,7 +228,7 @@ ReplicaSet creates:
 
 1 New Pod
 
-Relationship:
+### Relationship
 
 Deployment
 ↓
@@ -286,35 +238,40 @@ Pods
 
 In production, use Deployments rather than managing ReplicaSets directly.
 
-8. Scaling
+## 8. Scaling
 
-Manual scaling:
+### Manual scaling
 
+```bash
 kubectl scale deployment nginx-deployment --replicas=5
+```
 
-Result:
+### Result
 
-Before:
+### Before
 
+```text
 Pod 1
 Pod 2
 Pod 3
+```
 
-After:
+### After
 
+```text
 Pod 1
 Pod 2
 Pod 3
-
+```
 Pod 4
 Pod 5
-
-9. Services
+## 9. Services
 
 Pods are temporary.
 
 A Pod can:
 
+```text
 Crash
 ↓
 Deleted
@@ -322,11 +279,13 @@ Deleted
 Recreated
 ↓
 New IP Address
+```
 
 Therefore, we don't normally connect directly to Pod IP addresses.
 
 We use a Service.
 
+```text
 User
   |
 Service
@@ -334,25 +293,28 @@ Service
 +-----+-----+-----+
 | Pod | Pod | Pod |
 +-----+-----+-----+
+```
 
 The Service provides a stable network endpoint.
 
-10. Types of Services
-
+## 10. Types of Services
 ClusterIP
 
 Default Service type.
 
 Used for internal communication.
 
+```text
 Frontend Pod
      |
 ClusterIP Service
      |
 Backend Pods
+```
 
-Example:
+### Example
 
+```yaml
 apiVersion: v1
 kind: Service
 
@@ -368,24 +330,25 @@ spec:
       targetPort: 8080
 
   type: ClusterIP
-
+```
 NodePort
 
 Exposes the application using a Node's IP and port.
 
-http://NodeIP:30080
+`http://NodeIP:30080`
 
 Range:
 
-30000–32767
+`30000–32767`
 
-Example:
+### Example
 
 type: NodePort
 LoadBalancer
 
 Commonly used in cloud environments.
 
+```text
 Internet
     |
 Cloud Load Balancer
@@ -393,25 +356,27 @@ Cloud Load Balancer
 Kubernetes Service
     |
 Pods
+```
 
-Example:
+### Example
 
 type: LoadBalancer
 
-11. Kubernetes Networking
+## 11. Kubernetes Networking
 
-Basic rule:
+### Basic rule
 
 Every Pod gets its own IP address.
 
-Communication:
+### Communication
 
 Pod → Pod
 Pod → Service
 External User → Ingress/LoadBalancer → Service → Pod
 
-Simplified architecture:
+### Simplified architecture
 
+```text
 Internet
    |
 Load Balancer / Ingress
@@ -421,65 +386,58 @@ Service
 Pods
    |
 Container
+```
+## 12. CNI
 
-12. CNI
-
-CNI stands for:
+### CNI stands for
 
 Container Network Interface
 
-CNI plugins provide networking for Pods.
+### CNI plugins provide networking for Pods.
 
-Examples:
+### Examples
 
-Calico
+- Calico
+- Cilium
+- Flannel
+- AWS VPC CNI
+- Azure CNI
 
-Cilium
+### CNI handles
 
-Flannel
-
-AWS VPC CNI
-
-Azure CNI
-
-CNI handles:
-
-Pod IP allocation
-Pod-to-Pod networking
-Network policies
-
-13. DNS in Kubernetes
+- Pod IP allocation
+- Pod-to-Pod networking
+- Network policies
+## 13. DNS in Kubernetes
 
 Kubernetes has internal DNS.
 
-Example Service:
+### Example Service
 
 backend-service
 
-Another Pod can communicate using:
+### Another Pod can communicate using
 
 backend-service
 
-Fully qualified:
+### Fully qualified
 
-backend-service.namespace.svc.cluster.local
+`backend-service.namespace.svc.cluster.local`
 
-14. ConfigMaps
+## 14. ConfigMaps
 
 ConfigMaps store non-sensitive configuration.
 
-Examples:
+### Examples
 
-Application URL
+- Application URL
+- Environment
+- Log level
+- Database host
 
-Environment
+### Example
 
-Log Level
-
-Database Host
-
-Example:
-
+```yaml
 apiVersion: v1
 kind: ConfigMap
 
@@ -489,25 +447,24 @@ metadata:
 data:
   APP_ENV: production
   LOG_LEVEL: info
+```
 
 Use as environment variables or mounted files.
 
-15. Secrets
+## 15. Secrets
 
 Secrets store sensitive information.
 
-Examples:
+### Examples
 
-Passwords
+- Passwords
+- API keys
+- Tokens
+- Certificates
 
-API Keys
+### Example
 
-Tokens
-
-Certificates
-
-Example:
-
+```yaml
 apiVersion: v1
 kind: Secret
 
@@ -519,8 +476,8 @@ type: Opaque
 stringData:
   username: admin
   password: password123
-
-Important Interview Point
+```
+### Important Interview Point
 
 Kubernetes Secrets are not automatically encrypted just because they are Secrets.
 
@@ -528,21 +485,16 @@ Base64 encoding is not encryption.
 
 Production environments should configure:
 
-Encryption at Rest
+- Encryption at rest
+- RBAC
+- External secret management
 
-RBAC
+### Examples
 
-External Secret Management
-
-Examples:
-
-AWS Secrets Manager
-
-Azure Key Vault
-
-HashiCorp Vault
-
-16. Storage
+- AWS Secrets Manager
+- Azure Key Vault
+- HashiCorp Vault
+## 16. Storage
 
 Containers are ephemeral.
 
@@ -552,16 +504,15 @@ Container Data ❌
 
 Kubernetes provides persistent storage.
 
-Main components:
+### Main components
 
-PersistentVolume (PV)
+- PersistentVolume (PV)
+- PersistentVolumeClaim (PVC)
+- StorageClass
 
-PersistentVolumeClaim (PVC)
+### Architecture
 
-StorageClass
-
-Architecture:
-
+```text
 Application
      |
 PVC
@@ -569,38 +520,35 @@ PVC
 PV
      |
 Actual Storage
+```
 
-Examples:
+### Examples
 
-AWS EBS
-
-Azure Disk
-
-NFS
-
-Ceph
-
-17. PersistentVolume
+- AWS EBS
+- Azure Disk
+- NFS
+- Ceph
+## 17. PersistentVolume
 
 PV represents actual storage.
 
-Example:
+### Example
 
 100 GB Storage
-
-18. PersistentVolumeClaim
+## 18. PersistentVolumeClaim
 
 PVC is a request for storage.
 
-Example:
+### Example
 
 Application:
 "I need 10 GB."
 
 Kubernetes connects the PVC to suitable storage.
 
-Example:
+### Example
 
+```yaml
 apiVersion: v1
 kind: PersistentVolumeClaim
 
@@ -614,59 +562,57 @@ spec:
   resources:
     requests:
       storage: 10Gi
-
-19. StorageClass
+```
+## 19. StorageClass
 
 StorageClass enables dynamic provisioning.
 
 Instead of manually creating storage:
 
+```text
 Developer creates PVC
 ↓
 
 StorageClass
 ↓
 Cloud Disk Automatically Created
-
-20. Namespaces
+```
+## 20. Namespaces
 
 Namespaces logically separate resources.
 
-Examples:
+### Examples
 
-default
+- `default`
+- `kube-system`
+- `development`
+- `testing`
+- `production`
 
-kube-system
+### Commands
 
-development
-
-testing
-
-production
-
-Commands:
-
+```bash
 kubectl get pods
 ``` -n kube-system
 
-### Create:
+### Create
 
 ```bash
 kubectl create namespace dev
-
-21. Labels and Selectors
+```
+## 21. Labels and Selectors
 
 Labels are key-value pairs.
 
-Example:
+### Example
 
 labels:
 app: nginx
 environment: production
 
-Selectors find resources.
+### Selectors find resources.
 
-Example:
+### Example
 
 selector:
 matchLabels:
@@ -674,27 +620,25 @@ app: nginx
 
 Services use selectors to identify Pods.
 
+```text
 Service
    |
 Selector: app=nginx
    |
 Pods with app=nginx
-
-22. Annotations
+```
+## 22. Annotations
 
 Annotations store additional metadata.
 
 Unlike labels, annotations are generally not used for selecting objects.
 
-Examples:
+### Examples
 
-Load Balancer configuration
-
-Build information
-
-Monitoring configuration
-
-23. Resource Requests and Limits
+- Load Balancer configuration
+- Build information
+- Monitoring configuration
+## 23. Resource Requests and Limits
 
 Very important in production.
 
@@ -712,7 +656,7 @@ Requests
 
 Minimum resources required for scheduling.
 
-The scheduler considers:
+### The scheduler considers
 
 CPU
 Memory
@@ -723,11 +667,12 @@ Maximum resources a container can consume.
 
 Important:
 
+```text
 Memory Limit Exceeded
 ↓
 Container may be OOMKilled
-
-24. Health Checks
+```
+## 24. Health Checks
 
 Kubernetes supports:
 
@@ -736,20 +681,20 @@ Readiness Probe
 Startup Probe
 Liveness Probe
 
-Question:
+### Question
 
 Is the application still alive?
 
-If it fails:
+### If it fails
 
 Container Restart
 Readiness Probe
 
-Question:
+### Question
 
 Is the application ready to receive traffic?
 
-If it fails:
+### If it fails
 
 Pod removed from Service endpoints
 Startup Probe
@@ -758,32 +703,20 @@ Used for slow-starting applications.
 
 It prevents Kubernetes from killing the application before it finishes starting.
 
-25. Liveness vs Readiness
-
-Liveness Probe
-
-Readiness Probe
-
-Is the application alive?
-
-Can the application receive traffic?
-
-Failure may restart the container
-
-Pod is removed from Service endpoints
-
-Detects dead or unhealthy applications
-
-Controls traffic routing
-
-26. Autoscaling
-
+## 25. Liveness vs Readiness
+| Liveness Probe | Readiness Probe |
+|---|---|
+| Is the application alive? | Can the application receive traffic? |
+| Failure may restart the container | Pod is removed from Service endpoints |
+| Detects dead applications | Controls traffic routing |
+## 26. Autoscaling
 Horizontal Pod Autoscaler
 
 HPA increases or decreases the number of Pods.
 
-Example:
+### Example
 
+```text
 CPU High
    ↓
 3 Pods
@@ -791,17 +724,19 @@ CPU High
 HPA
    ↓
 6 Pods
+```
 
 Command:
 
+```bash
 kubectl autoscale deployment app \
 --min=2 \
 --max=10 \
 --cpu-percent=70
-
+```
 Vertical Pod Autoscaler
 
-VPA adjusts:
+### VPA adjusts
 
 CPU
 Memory
@@ -812,97 +747,93 @@ Cluster Autoscaler
 
 Adds or removes Nodes.
 
+```text
 Not enough Node capacity
         ↓
 Cluster Autoscaler
         ↓
 New Node Added
-
-27. Scheduling
+```
+## 27. Scheduling
 
 The Kubernetes Scheduler decides where Pods run.
 
-It considers:
+### It considers
 
-Resource requests
-
-Node availability
-
-Taints
-
-Tolerations
-
-Node affinity
-
-Pod affinity
-
-Pod anti-affinity
-
-28. Taints and Tolerations
+- Resource requests
+- Node availability
+- Taints
+- Tolerations
+- Node affinity
+- Pod affinity
+- Pod anti-affinity
+## 28. Taints and Tolerations
 
 Taints repel Pods.
 
-Example:
+### Example
 
 Node:
 Dedicated for Database
 
-Taint:
+### Taint
 
 NoSchedule
 
 Only Pods with matching toleration can run there.
 
-Think:
+### Think
 
 Taint = Keep Pods Away
 Toleration = Permission to Enter
-
-29. Node Affinity
+## 29. Node Affinity
 
 Node Affinity tells Kubernetes:
 
 Run this Pod on Nodes matching specific conditions.
 
-Example:
+### Example
 
 Only run on SSD Nodes.
-
-30. Pod Affinity
+## 30. Pod Affinity
 
 Run Pods near each other.
 
-Example:
+### Example
 
+```text
 Application Pod
 +
 Cache Pod
 
 Run on same Node/Zone
-
-31. Pod Anti-Affinity
+```
+## 31. Pod Anti-Affinity
 
 Keep Pods apart.
 
-Example:
+### Example
 
+```text
 Replica 1 → Node 1
 Replica 2 → Node 2
 Replica 3 → Node 3
+```
 
 This improves availability.
 
-32. Rolling Updates
+## 32. Rolling Updates
 
 Kubernetes can update applications without downtime.
 
-Example:
+### Example
 
 Version 1
-
+```text
 Pod 1
 Pod 2
 Pod 3
+```
 
     ↓
 
@@ -912,63 +843,65 @@ Pod 1 → Updated
 Pod 2 → Updated
 Pod 3 → Updated
 
-Commands:
+### Commands
 
+```bash
 kubectl set image deployment/app \
 app=nginx:1.25
+```
 
-Check:
+### Check
 
+```bash
 kubectl rollout status deployment/app
+```
+## 33. Rollback
 
-33. Rollback
+### Check history
 
-Check history:
-
+```bash
 kubectl rollout history deployment/app
+```
 
-Rollback:
+### Rollback
 
+```bash
 kubectl rollout undo deployment/app
-
-34. StatefulSet
+```
+## 34. StatefulSet
 
 Used for stateful applications.
 
-Examples:
+### Examples
 
-Databases
-
-Kafka
-
-Elasticsearch
+- Databases
+- Kafka
+- Elasticsearch
 
 Unlike Deployments:
 
 Pod Names Are Stable
 
-Example:
+### Example
 
 mysql-0
 mysql-1
 mysql-2
-
-35. DaemonSet
+## 35. DaemonSet
 
 Ensures one Pod runs on every Node.
 
-Examples:
+### Examples
 
-Monitoring agents
+- Monitoring agents
+- Logging agents
+- Security agents
+- CNI components
 
-Logging agents
+### Example
 
-Security agents
-
-CNI components
-
-Example:
-
+```text
 Node 1 → Monitoring Pod
 Node 2 → Monitoring Pod
 Node 3 → Monitoring Pod
+```
