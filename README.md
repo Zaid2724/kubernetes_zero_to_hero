@@ -13,8 +13,7 @@ Kubernetes provides: Auto healing, Auto scaling, Load balancing, Rolling updates
 
 Think:
 
-Docker → Runs containers
-Kubernetes → Manages containers at scale
+Docker → Runs containers, Kubernetes → Manages containers at scale
 
 2. Why Kubernetes?
 
@@ -23,11 +22,7 @@ Docker solves the problem of creating and running containers.
 But imagine you have:
 
 500 containers
-Multiple servers
-High traffic
-Application failures
-Multiple environments
-New application releases
+Multiple servers, High traffic, Application failures, Multiple environments, New application releases
 
 Managing all of this manually becomes difficult.
 
