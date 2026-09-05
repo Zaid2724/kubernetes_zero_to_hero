@@ -21,8 +21,7 @@ Docker solves the problem of creating and running containers.
 
 But imagine you have:
 
-500 containers
-Multiple servers, High traffic, Application failures, Multiple environments, New application releases
+500 containers, Multiple servers, High traffic, Application failures, Multiple environments, New application releases
 
 Managing all of this manually becomes difficult.
 
